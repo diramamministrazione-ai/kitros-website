@@ -3,50 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitros - Appartamento Lussuoso a Palagiano | Prenota Online con Sconto</title>
+    <title>Kitros - Appartamento Lussuoso a Palagiano | Prenota Online</title>
     <meta name="description" content="Kitros: appartamento moderno a Palagiano con 2 camere, WiFi gratuito 69 Mbps, aria condizionata, parcheggio gratis, giardino. Prenota online e risparmia!">
-    <meta name="keywords" content="apartamento Palagiano, affitto breve Puglia, Kitros, casa vacanze Taranto, alloggio Palagiano">
-    <meta name="author" content="Kitros">
-    <meta name="robots" content="index, follow">
     
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Kitros - Appartamento Lussuoso a Palagiano">
-    <meta property="og:description" content="Scopri Kitros: appartamento con 2 camere a Palagiano. WiFi veloce, giardino, parcheggio gratis. Prenota ora!">
-    <meta property="og:locale" content="it_IT">
-    
-    <!-- Schema.org -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Apartment",
-      "name": "Kitros",
-      "description": "Appartamento moderno a Palagiano con 2 camere da letto, WiFi gratuito e giardino",
-      "url": "https://kitros-palagiano.com",
-      "telephone": "+39123456789",
-      "email": "info@kitros.it",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Palagiano",
-        "addressLocality": "Palagiano",
-        "addressRegion": "TA",
-        "postalCode": "74024",
-        "addressCountry": "IT"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "9.8",
-        "reviewCount": "5",
-        "bestRating": "10"
-      },
-      "amenityFeature": [
-        {"@type": "LocationFeatureSpecification", "name": "WiFi Gratuito", "value": true},
-        {"@type": "LocationFeatureSpecification", "name": "Aria Condizionata", "value": true},
-        {"@type": "LocationFeatureSpecification", "name": "Giardino", "value": true},
-        {"@type": "LocationFeatureSpecification", "name": "Parcheggio Gratuito", "value": true}
-      ]
-    }
-    </script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4"></script>
 
     <style>
         * {
@@ -66,31 +27,391 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Arial', sans-serif;
             color: var(--dark-color);
             line-height: 1.6;
             background-color: #FAFAF8;
         }
 
         h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
             color: var(--dark-color);
-        }
-
-        /* HEADER */
-        header {
-            background: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* LOGIN MODAL */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+
+        .login-modal.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+
+        .login-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .login-close:hover {
+            color: var(--error-color);
+        }
+
+        .login-box h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .login-box p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-form label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .login-form input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+        }
+
+        .login-error {
+            background: #FADBD8;
+            color: var(--error-color);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+            text-align: center;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        .login-demo {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .login-demo strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .login-demo p {
+            margin: 5px 0;
+            text-align: left;
+            color: #555;
+        }
+
+        .btn-login {
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-login:hover {
+            background: #7A6048;
+        }
+
+        /* ADMIN PANEL */
+        .admin-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+        }
+
+        .admin-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-btn:hover {
+            transform: scale(1.1);
+            background: var(--secondary-color);
+        }
+
+        .admin-btn.hidden {
+            display: none;
+        }
+
+        .admin-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 10000;
+        }
+
+        .admin-panel.open {
+            transform: translateX(0);
+        }
+
+        .admin-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h2 {
+            color: white;
+            font-size: 20px;
+        }
+
+        .admin-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .admin-content {
+            padding: 20px;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .admin-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: block;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 10px;
+            background: var(--light-color);
+            border: 2px dashed var(--primary-color);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .file-input-label:hover {
+            background: rgba(139, 115, 85, 0.1);
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .upload-progress {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            display: none;
+            font-size: 12px;
+        }
+
+        .upload-progress.show {
+            display: block;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-save:hover {
+            background: #229954;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #C0392B;
+        }
+
+        .save-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .save-status.success {
+            background: #D5F4E6;
+            color: var(--success-color);
+            display: block;
+        }
+
+        .save-status.error {
+            background: #FADBD8;
+            color: var(--error-color);
+            display: block;
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .header-content {
@@ -102,40 +423,114 @@
         .logo {
             font-size: 28px;
             font-weight: 700;
-            color: var(--primary-color);
-            font-family: 'Playfair Display', serif;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
         }
 
         nav a {
-            color: var(--dark-color);
+            color: white;
             text-decoration: none;
-            margin-left: 30px;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         nav a:hover {
-            color: var(--secondary-color);
+            opacity: 0.8;
+        }
+
+        .btn-header-login {
+            padding: 10px 20px;
+            background: rgba(139, 115, 85, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-header-login:hover {
+            background: rgba(139, 115, 85, 0.95);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-header-logout {
+            padding: 10px 20px;
+            background: rgba(231, 76, 60, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-header-logout:hover {
+            background: rgba(231, 76, 60, 0.95);
+            transform: translateY(-2px);
+        }
+
+        .btn-header-login.hidden,
+        .btn-header-logout.hidden {
+            display: none;
         }
 
         /* HERO SECTION */
         .hero {
-            background: linear-gradient(135deg, #8B7355 0%, #A88968 100%);
             color: white;
             padding: 80px 0;
             text-align: center;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
             font-size: 48px;
             margin-bottom: 20px;
-            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .hero p {
             font-size: 18px;
             margin-bottom: 40px;
             opacity: 0.95;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
         }
 
         .btn {
@@ -155,17 +550,6 @@
         .btn:hover {
             background: #C89564;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
         }
 
         /* GALLERY */
@@ -214,7 +598,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
-            margin-bottom: 40px;
         }
 
         .amenity-card {
@@ -223,12 +606,6 @@
             border-radius: 8px;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
-
-        .amenity-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
         .amenity-icon {
@@ -241,11 +618,6 @@
             margin-bottom: 10px;
         }
 
-        .amenity-card p {
-            color: #666;
-            font-size: 14px;
-        }
-
         /* BOOKING WIDGET */
         .booking-widget {
             background: white;
@@ -255,43 +627,18 @@
             margin-bottom: 60px;
         }
 
-        .booking-widget h3 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
         .booking-form {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--dark-color);
-        }
-
-        .form-group input,
-        .form-group select {
+        .booking-form input,
+        .booking-form select {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
         }
 
         .price-info {
@@ -308,11 +655,6 @@
             text-align: center;
         }
 
-        .price-item label {
-            font-size: 12px;
-            color: #666;
-        }
-
         .price-item .amount {
             font-size: 24px;
             font-weight: 700;
@@ -325,7 +667,6 @@
             padding: 40px;
             border-radius: 8px;
             margin-bottom: 60px;
-            line-height: 1.8;
         }
 
         .description h2 {
@@ -337,6 +678,7 @@
             margin-bottom: 15px;
             color: #555;
             font-size: 15px;
+            line-height: 1.8;
         }
 
         /* REVIEWS */
@@ -355,27 +697,15 @@
             background: white;
             padding: 30px;
             border-radius: 8px;
-            margin-bottom: 40px;
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 40px;
-            align-items: center;
-        }
-
-        .rating-main {
-            text-align: center;
         }
 
         .rating-number {
             font-size: 60px;
             font-weight: 700;
             color: var(--primary-color);
-        }
-
-        .rating-label {
-            font-size: 18px;
-            color: #666;
-            margin: 10px 0;
         }
 
         .rating-bars {
@@ -390,11 +720,6 @@
             align-items: center;
         }
 
-        .rating-bar-label {
-            width: 100px;
-            font-size: 14px;
-        }
-
         .rating-bar-fill {
             flex: 1;
             height: 8px;
@@ -407,14 +732,6 @@
         .rating-bar-progress {
             height: 100%;
             background: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        .rating-bar-value {
-            width: 40px;
-            text-align: right;
-            font-weight: 600;
-            color: var(--primary-color);
         }
 
         /* FOOTER */
@@ -434,7 +751,6 @@
         .footer-section h4 {
             font-size: 16px;
             margin-bottom: 20px;
-            font-family: 'Inter', sans-serif;
             font-weight: 600;
         }
 
@@ -443,11 +759,6 @@
             color: rgba(255,255,255,0.7);
             text-decoration: none;
             margin-bottom: 10px;
-            transition: color 0.3s;
-        }
-
-        .footer-section a:hover {
-            color: white;
         }
 
         .footer-section p {
@@ -462,86 +773,11 @@
             color: rgba(255,255,255,0.6);
         }
 
-        /* PAYMENT SECTION */
-        .payment-methods {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            margin-bottom: 60px;
-        }
-
-        .payment-methods h3 {
-            font-size: 20px;
-            margin-bottom: 25px;
-        }
-
-        .payment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .payment-option {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .payment-option:hover {
-            border-color: var(--primary-color);
-            background: var(--light-color);
-        }
-
-        .payment-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .payment-option label {
-            font-weight: 600;
-            display: block;
-            font-size: 14px;
-        }
-
-        /* GUARANTEES */
-        .guarantees {
-            background: var(--light-color);
-            padding: 40px;
-            border-radius: 8px;
-            margin-bottom: 60px;
-            border-left: 5px solid var(--primary-color);
-        }
-
-        .guarantees h3 {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .guarantees ul {
-            list-style: none;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .guarantees li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .guarantees li:before {
-            content: "✓";
-            color: var(--success-color);
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        /* RESPONSIVE */
         @media (max-width: 768px) {
+            .admin-panel {
+                width: 100%;
+            }
+
             .hero h1 {
                 font-size: 32px;
             }
@@ -558,54 +794,234 @@
                 grid-row: span 1;
             }
 
-            .booking-form {
-                grid-template-columns: 1fr;
-            }
-
             .rating-summary {
                 grid-template-columns: 1fr;
             }
 
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            nav {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            nav a {
-                margin-left: 0;
+            .login-box {
+                margin: 20px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- LOGIN MODAL -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box">
+            <button class="login-close" id="loginClose">✕</button>
+            <h2>Accedi</h2>
+            <p>Area riservata amministratore</p>
+            
+            <div class="login-demo">
+                <strong>Credenziali Demo:</strong>
+                <p>👤 Username: <strong>admin</strong></p>
+                <p>🔑 Password: <strong>kitros2026</strong></p>
+            </div>
+
+            <div class="login-form">
+                <div class="login-error" id="loginError"></div>
+                
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Inserisci username">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Inserisci password">
+                </div>
+
+                <button class="btn-login" id="loginBtn">Accedi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL TOGGLE -->
+    <div class="admin-toggle">
+        <button class="admin-btn hidden" id="adminToggle">⚙️</button>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h2>Pannello Admin</h2>
+            <button class="admin-close" id="adminClose">✕</button>
+        </div>
+        <div class="admin-content">
+            <!-- HERO SECTION -->
+            <div class="admin-section">
+                <h3>🏠 Sezione Hero</h3>
+                <div class="form-group">
+                    <label>Carica Immagine Hero</label>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" for="heroImageFile">
+                            📤 Clicca per caricare immagine
+                        </label>
+                        <input type="file" id="heroImageFile" accept="image/*">
+                    </div>
+                    <div class="upload-progress" id="heroUploadProgress">
+                        <div>Caricamento in corso... <span id="heroProgressText">0%</span></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Titolo principale</label>
+                    <input type="text" id="heroTitle" placeholder="Titolo">
+                </div>
+                <div class="form-group">
+                    <label>Sottotitolo</label>
+                    <input type="text" id="heroSubtitle" placeholder="Sottotitolo">
+                </div>
+            </div>
+
+            <!-- GALLERIA IMMAGINI -->
+            <div class="admin-section">
+                <h3>🖼️ Galleria Immagini</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Carica le 4 immagini della galleria</p>
+                
+                <div class="form-group">
+                    <label>Immagine 1 (principale)</label>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" for="img1File">
+                            📤 Clicca per caricare
+                        </label>
+                        <input type="file" id="img1File" accept="image/*">
+                    </div>
+                    <div class="upload-progress" id="img1UploadProgress">
+                        <div>Caricamento in corso... <span id="img1ProgressText">0%</span></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Immagine 2</label>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" for="img2File">
+                            📤 Clicca per caricare
+                        </label>
+                        <input type="file" id="img2File" accept="image/*">
+                    </div>
+                    <div class="upload-progress" id="img2UploadProgress">
+                        <div>Caricamento in corso... <span id="img2ProgressText">0%</span></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Immagine 3</label>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" for="img3File">
+                            📤 Clicca per caricare
+                        </label>
+                        <input type="file" id="img3File" accept="image/*">
+                    </div>
+                    <div class="upload-progress" id="img3UploadProgress">
+                        <div>Caricamento in corso... <span id="img3ProgressText">0%</span></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Immagine 4</label>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-label" for="img4File">
+                            📤 Clicca per caricare
+                        </label>
+                        <input type="file" id="img4File" accept="image/*">
+                    </div>
+                    <div class="upload-progress" id="img4UploadProgress">
+                        <div>Caricamento in corso... <span id="img4ProgressText">0%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESCRIZIONE -->
+            <div class="admin-section">
+                <h3>📝 Descrizione</h3>
+                <div class="form-group">
+                    <label>Titolo sezione</label>
+                    <input type="text" id="descTitle" placeholder="Titolo">
+                </div>
+                <div class="form-group">
+                    <label>Paragrafo 1</label>
+                    <textarea id="desc1" placeholder="Primo paragrafo"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Paragrafo 2</label>
+                    <textarea id="desc2" placeholder="Secondo paragrafo"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Paragrafo 3</label>
+                    <textarea id="desc3" placeholder="Terzo paragrafo"></textarea>
+                </div>
+            </div>
+
+            <!-- PREZZO -->
+            <div class="admin-section">
+                <h3>💰 Prezzo per notte</h3>
+                <div class="form-group">
+                    <label>Prezzo (€)</label>
+                    <input type="number" id="pricePerNight" placeholder="70" min="0">
+                </div>
+            </div>
+
+            <!-- CONTATTI -->
+            <div class="admin-section">
+                <h3>📞 Contatti</h3>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="info@kitros.it">
+                </div>
+                <div class="form-group">
+                    <label>Telefono</label>
+                    <input type="tel" id="phone" placeholder="+39 123 456 789">
+                </div>
+                <div class="form-group">
+                    <label>Indirizzo</label>
+                    <input type="text" id="address" placeholder="Palagiano, TA 74024">
+                </div>
+            </div>
+
+            <!-- RATING -->
+            <div class="admin-section">
+                <h3>⭐ Rating (su 10)</h3>
+                <div class="form-group">
+                    <label>Rating generale</label>
+                    <input type="number" id="ratingMain" placeholder="9.8" min="0" max="10" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Numero recensioni</label>
+                    <input type="number" id="reviewCount" placeholder="5" min="0">
+                </div>
+            </div>
+
+            <button class="btn-save" id="saveBtn">💾 Salva Modifiche</button>
+            <div class="save-status" id="saveStatus"></div>
+            <button class="btn-logout" id="logoutBtn">🚪 Esci</button>
+        </div>
+    </div>
+
     <!-- HEADER -->
     <header>
         <div class="container">
             <div class="header-content">
                 <div class="logo">Kitros</div>
-                <nav>
-                    <a href="#descrizione">Descrizione</a>
-                    <a href="#camere">Camere</a>
-                    <a href="#servizi">Servizi</a>
-                    <a href="#contatti">Contatti</a>
-                </nav>
+                <div class="header-right">
+                    <nav>
+                        <a href="#descrizione">Descrizione</a>
+                        <a href="#camere">Camere</a>
+                        <a href="#servizi">Servizi</a>
+                        <a href="#contatti">Contatti</a>
+                    </nav>
+                    <button class="btn-header-login" id="headerLoginBtn">🔐 Accedi</button>
+                    <button class="btn-header-logout hidden" id="headerLogoutBtn">🚪 Esci</button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- HERO -->
-    <section class="hero">
+    <section class="hero" id="heroSection">
         <div class="container">
-            <h1>Appartamento Lussuoso a Palagiano</h1>
-            <p>Scopri il comfort e la serenità a 23 km da Taranto</p>
+            <h1 id="h1Text">Appartamento Lussuoso a Palagiano</h1>
+            <p id="pText">Scopri il comfort e la serenità a 23 km da Taranto</p>
             <a href="#booking" class="btn">Prenota Ora</a>
-            <a href="#descrizione" class="btn btn-secondary">Scopri di più</a>
         </div>
     </section>
 
@@ -613,10 +1029,10 @@
     <section class="gallery-section">
         <div class="container">
             <div class="gallery-grid">
-                <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop" alt="Soggiorno">
-                <img src="https://images.unsplash.com/photo-1566195992211-291629590fc3?w=300&h=200&fit=crop" alt="Camera">
-                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&h=200&fit=crop" alt="Cucina">
-                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&h=200&fit=crop" alt="Giardino">
+                <img id="galleryImg1" src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop" alt="Soggiorno">
+                <img id="galleryImg2" src="https://images.unsplash.com/photo-1566195992211-291629590fc3?w=300&h=200&fit=crop" alt="Camera">
+                <img id="galleryImg3" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&h=200&fit=crop" alt="Cucina">
+                <img id="galleryImg4" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&h=200&fit=crop" alt="Giardino">
             </div>
         </div>
     </section>
@@ -627,15 +1043,15 @@
             <div class="booking-widget">
                 <h3>Prenota il tuo soggiorno</h3>
                 <form class="booking-form" id="bookingForm">
-                    <div class="form-group">
+                    <div style="display: flex; flex-direction: column;">
                         <label>Check-in</label>
                         <input type="date" id="checkIn" required>
                     </div>
-                    <div class="form-group">
+                    <div style="display: flex; flex-direction: column;">
                         <label>Check-out</label>
                         <input type="date" id="checkOut" required>
                     </div>
-                    <div class="form-group">
+                    <div style="display: flex; flex-direction: column;">
                         <label>Numero ospiti</label>
                         <select id="guests" required>
                             <option value="">Seleziona</option>
@@ -655,7 +1071,7 @@
                     </div>
                     <div class="price-item">
                         <label>Prezzo/notte:</label>
-                        <div class="amount">€70</div>
+                        <div class="amount" id="priceDisplay">€70</div>
                     </div>
                     <div class="price-item">
                         <label>Subtotale:</label>
@@ -670,6 +1086,18 @@
                         <div class="amount" id="total" style="color: var(--success-color);">€0</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESCRIPTION -->
+    <section id="descrizione">
+        <div class="container">
+            <div class="description">
+                <h2 id="descTitleText">Benvenuti a Kitros</h2>
+                <p id="descP1">Kitros si trova a Palagiano a 23 km da Cattedrale di Taranto, 24 km da Castello Aragonese e 24 km da Museo Archeologico Nazionale di Taranto - MArTA. La struttura offre un giardino, la vista sul giardino e il WiFi gratuito in tutta la struttura.</p>
+                <p id="descP2">Questo appartamento con aria condizionata comprende 2 camere da letto, un soggiorno, una cucina con utensili, frigorifero e macchina da caffè, e 1 bagno con bidet e doccia. Presso questo appartamento troverete asciugamani e lenzuola tra i servizi disponibili.</p>
+                <p id="descP3">Taranto Sotterranea è a 26 km da questo appartamento, mentre Cattedrale di Matera si trova a 45 km dalla struttura. Aeroporto di Bari Karol Wojtyla si trova a 78 km di distanza.</p>
             </div>
         </div>
     </section>
@@ -713,110 +1141,41 @@
         </div>
     </section>
 
-    <!-- DESCRIPTION -->
-    <section id="descrizione">
-        <div class="container">
-            <div class="description">
-                <h2>Benvenuti a Kitros</h2>
-                <p>
-                    Kitros si trova a Palagiano a 23 km da Cattedrale di Taranto, 24 km da Castello Aragonese e 24 km da Museo Archeologico Nazionale di Taranto - MArTA. La struttura offre un giardino, la vista sul giardino e il WiFi gratuito in tutta la struttura.
-                </p>
-                <p>
-                    Questo appartamento con aria condizionata comprende 2 camere da letto, un soggiorno, una cucina con utensili, frigorifero e macchina da caffè, e 1 bagno con bidet e doccia. Presso questo appartamento troverete asciugamani e lenzuola tra i servizi disponibili.
-                </p>
-                <p>
-                    Taranto Sotterranea è a 26 km da questo appartamento, mentre Cattedrale di Matera si trova a 45 km dalla struttura. Aeroporto di Bari Karol Wojtyla si trova a 78 km di distanza.
-                </p>
-                
-                <div style="margin-top: 30px;">
-                    <h3>Posizione straordinaria</h3>
-                    <p>La proprietà è stata valutata dagli ospiti recenti con 9,8 su 10 per la sua posizione eccellente. Palagiano è un ottimo luogo dove pernottare per poter visitare diverse città e spiagge in Puglia.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PAYMENT METHODS -->
-    <section>
-        <div class="container">
-            <div class="payment-methods">
-                <h3>Metodi di pagamento</h3>
-                <div class="payment-grid">
-                    <div class="payment-option">
-                        <div class="payment-icon">💳</div>
-                        <label>Carta di Credito</label>
-                    </div>
-                    <div class="payment-option">
-                        <div class="payment-icon">🏦</div>
-                        <label>Bonifico Bancario</label>
-                    </div>
-                    <div class="payment-option">
-                        <div class="payment-icon">📱</div>
-                        <label>Paypal</label>
-                    </div>
-                    <div class="payment-option">
-                        <div class="payment-icon">💰</div>
-                        <label>Contanti</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- GUARANTEES -->
-    <section>
-        <div class="container">
-            <div class="guarantees">
-                <h3>Le tue garanzie</h3>
-                <ul>
-                    <li>Miglior prezzo garantito</li>
-                    <li>Cancellazione gratuita fino a 7 giorni prima</li>
-                    <li>Conferma immediata della prenotazione</li>
-                    <li>Supporto 24/7 in italiano</li>
-                    <li>Nessun costo nascosto</li>
-                    <li>Struttura certificata e verificata</li>
-                    <li>Rating 9.8/10 - Eccezionale</li>
-                    <li>5 recensioni positive</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
     <!-- REVIEWS -->
     <section class="reviews">
         <div class="container">
             <h2>Le valutazioni degli ospiti</h2>
             <div class="rating-summary">
-                <div class="rating-main">
-                    <div class="rating-number">9.8</div>
-                    <div class="rating-label">Eccezionale</div>
-                    <div class="rating-label" style="font-size: 14px; color: #999;">5 recensioni</div>
+                <div style="text-align: center;">
+                    <div class="rating-number" id="ratingMainDisplay">9.8</div>
+                    <div style="font-size: 18px; margin: 10px 0;">Eccezionale</div>
+                    <div style="font-size: 14px; color: #999;" id="reviewCountDisplay">5 recensioni</div>
                 </div>
                 <div class="rating-bars">
                     <div class="rating-bar">
-                        <div class="rating-bar-label">Personale</div>
+                        <div style="width: 100px; font-size: 14px;">Personale</div>
                         <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 95%"></div></div>
-                        <div class="rating-bar-value">9.5</div>
+                        <div style="width: 40px; text-align: right; font-weight: 600; color: var(--primary-color);">9.5</div>
                     </div>
                     <div class="rating-bar">
-                        <div class="rating-bar-label">Servizi</div>
+                        <div style="width: 100px; font-size: 14px;">Servizi</div>
                         <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 100%"></div></div>
-                        <div class="rating-bar-value">10</div>
+                        <div style="width: 40px; text-align: right; font-weight: 600; color: var(--primary-color);">10</div>
                     </div>
                     <div class="rating-bar">
-                        <div class="rating-bar-label">Comfort</div>
+                        <div style="width: 100px; font-size: 14px;">Comfort</div>
                         <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 100%"></div></div>
-                        <div class="rating-bar-value">10</div>
+                        <div style="width: 40px; text-align: right; font-weight: 600; color: var(--primary-color);">10</div>
                     </div>
                     <div class="rating-bar">
-                        <div class="rating-bar-label">Qualità/Prezzo</div>
+                        <div style="width: 100px; font-size: 14px;">Qualità/Prezzo</div>
                         <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 100%"></div></div>
-                        <div class="rating-bar-value">10</div>
+                        <div style="width: 40px; text-align: right; font-weight: 600; color: var(--primary-color);">10</div>
                     </div>
                     <div class="rating-bar">
-                        <div class="rating-bar-label">Posizione</div>
+                        <div style="width: 100px; font-size: 14px;">Posizione</div>
                         <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 95%"></div></div>
-                        <div class="rating-bar-value">9.5</div>
+                        <div style="width: 40px; text-align: right; font-weight: 600; color: var(--primary-color);">9.5</div>
                     </div>
                 </div>
             </div>
@@ -840,9 +1199,9 @@
                 </div>
                 <div class="footer-section">
                     <h4>Contatti</h4>
-                    <p>📧 Email: info@kitros.it</p>
-                    <p>📱 Tel: +39 123 456 789</p>
-                    <p>📍 Palagiano, TA 74024</p>
+                    <p id="emailDisplay">📧 Email: info@kitros.it</p>
+                    <p id="phoneDisplay">📱 Tel: +39 123 456 789</p>
+                    <p id="addressDisplay">📍 Palagiano, TA 74024</p>
                 </div>
                 <div class="footer-section">
                     <h4>Seguici</h4>
@@ -858,14 +1217,293 @@
     </footer>
 
     <script>
-        const pricePerNight = 70;
-        const taxRate = 0.10;
+        // Configurazione Supabase
+        const SUPABASE_URL = 'https://kmgskjvpqmtlmdjhtmit.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_NQU57GyJqpYqhKq0Z4gy2Q_UF_4wqho';
+        const BUCKET_NAME = 'kitros-images';
 
-        // Calcola il prezzo automaticamente
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // CREDENZIALI ADMIN (Demo)
+        const ADMIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'kitros2026'
+        };
+
+        // Dati di default
+        const defaultData = {
+            heroImage: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&h=600&fit=crop",
+            heroTitle: "Appartamento Lussuoso a Palagiano",
+            heroSubtitle: "Scopri il comfort e la serenità a 23 km da Taranto",
+            descTitle: "Benvenuti a Kitros",
+            desc1: "Kitros si trova a Palagiano a 23 km da Cattedrale di Taranto, 24 km da Castello Aragonese e 24 km da Museo Archeologico Nazionale di Taranto - MArTA. La struttura offre un giardino, la vista sul giardino e il WiFi gratuito in tutta la struttura.",
+            desc2: "Questo appartamento con aria condizionata comprende 2 camere da letto, un soggiorno, una cucina con utensili, frigorifero e macchina da caffè, e 1 bagno con bidet e doccia. Presso questo appartamento troverete asciugamani e lenzuola tra i servizi disponibili.",
+            desc3: "Taranto Sotterranea è a 26 km da questo appartamento, mentre Cattedrale di Matera si trova a 45 km dalla struttura. Aeroporto di Bari Karol Wojtyla si trova a 78 km di distanza.",
+            img1: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop",
+            img2: "https://images.unsplash.com/photo-1566195992211-291629590fc3?w=300&h=200&fit=crop",
+            img3: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&h=200&fit=crop",
+            img4: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&h=200&fit=crop",
+            pricePerNight: 70,
+            email: "info@kitros.it",
+            phone: "+39 123 456 789",
+            address: "Palagiano, TA 74024",
+            ratingMain: 9.8,
+            reviewCount: 5
+        };
+
+        // LOGIN SYSTEM
+        function isLoggedIn() {
+            return localStorage.getItem('kitrosAdminLoggedIn') === 'true';
+        }
+
+        function setLoggedIn(value) {
+            if (value) {
+                localStorage.setItem('kitrosAdminLoggedIn', 'true');
+            } else {
+                localStorage.removeItem('kitrosAdminLoggedIn');
+            }
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                setLoggedIn(true);
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('adminToggle').classList.remove('hidden');
+                document.getElementById('headerLoginBtn').classList.add('hidden');
+                document.getElementById('headerLogoutBtn').classList.remove('hidden');
+                loadData();
+                errorDiv.classList.remove('show');
+            } else {
+                errorDiv.textContent = '❌ Username o password non corretti';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function handleLogout() {
+            setLoggedIn(false);
+            document.getElementById('adminToggle').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('open');
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('headerLoginBtn').classList.remove('hidden');
+            document.getElementById('headerLogoutBtn').classList.add('hidden');
+        }
+
+        // Carica i dati dal localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('kitrosData');
+            const data = savedData ? JSON.parse(savedData) : defaultData;
+            
+            // Popola il form admin
+            document.getElementById('heroTitle').value = data.heroTitle;
+            document.getElementById('heroSubtitle').value = data.heroSubtitle;
+            document.getElementById('descTitle').value = data.descTitle;
+            document.getElementById('desc1').value = data.desc1;
+            document.getElementById('desc2').value = data.desc2;
+            document.getElementById('desc3').value = data.desc3;
+            document.getElementById('pricePerNight').value = data.pricePerNight;
+            document.getElementById('email').value = data.email;
+            document.getElementById('phone').value = data.phone;
+            document.getElementById('address').value = data.address;
+            document.getElementById('ratingMain').value = data.ratingMain;
+            document.getElementById('reviewCount').value = data.reviewCount;
+            
+            // Applica i dati al sito
+            applyData(data);
+        }
+
+        // Applica i dati al sito
+        function applyData(data) {
+            document.querySelector('.hero').style.backgroundImage = `url('${data.heroImage}')`;
+            document.getElementById('h1Text').textContent = data.heroTitle;
+            document.getElementById('pText').textContent = data.heroSubtitle;
+            document.getElementById('descTitleText').textContent = data.descTitle;
+            document.getElementById('descP1').textContent = data.desc1;
+            document.getElementById('descP2').textContent = data.desc2;
+            document.getElementById('descP3').textContent = data.desc3;
+            document.getElementById('galleryImg1').src = data.img1;
+            document.getElementById('galleryImg2').src = data.img2;
+            document.getElementById('galleryImg3').src = data.img3;
+            document.getElementById('galleryImg4').src = data.img4;
+            document.getElementById('priceDisplay').textContent = '€' + data.pricePerNight;
+            document.getElementById('emailDisplay').textContent = '📧 Email: ' + data.email;
+            document.getElementById('phoneDisplay').textContent = '📱 Tel: ' + data.phone;
+            document.getElementById('addressDisplay').textContent = '📍 ' + data.address;
+            document.getElementById('ratingMainDisplay').textContent = data.ratingMain;
+            document.getElementById('reviewCountDisplay').textContent = data.reviewCount + ' recensioni';
+        }
+
+        // Upload immagine a Supabase
+        async function uploadImageToSupabase(file, path) {
+            try {
+                const { data, error } = await supabase.storage
+                    .from(BUCKET_NAME)
+                    .upload(path, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    });
+
+                if (error) throw error;
+
+                // Ottieni l'URL pubblico
+                const { data: urlData } = supabase.storage
+                    .from(BUCKET_NAME)
+                    .getPublicUrl(path);
+
+                return urlData.publicUrl;
+            } catch (error) {
+                console.error('Errore upload:', error);
+                throw error;
+            }
+        }
+
+        // Gestisci upload immagine hero
+        document.getElementById('heroImageFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const progress = document.getElementById('heroUploadProgress');
+            progress.classList.add('show');
+
+            try {
+                const fileName = `hero-${Date.now()}-${file.name}`;
+                const url = await uploadImageToSupabase(file, fileName);
+                
+                // Salva l'URL nel localStorage
+                const savedData = JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData));
+                savedData.heroImage = url;
+                localStorage.setItem('kitrosData', JSON.stringify(savedData));
+                applyData(savedData);
+
+                progress.classList.remove('show');
+                document.getElementById('heroImageFile').value = '';
+                
+                showStatus('✓ Immagine hero caricata!', 'success');
+            } catch (error) {
+                progress.classList.remove('show');
+                showStatus('❌ Errore nel caricamento', 'error');
+            }
+        });
+
+        // Gestisci upload immagini galleria
+        const galleryInputs = [
+            { input: 'img1File', img: 'galleryImg1', progress: 'img1UploadProgress', progressText: 'img1ProgressText' },
+            { input: 'img2File', img: 'galleryImg2', progress: 'img2UploadProgress', progressText: 'img2ProgressText' },
+            { input: 'img3File', img: 'galleryImg3', progress: 'img3UploadProgress', progressText: 'img3ProgressText' },
+            { input: 'img4File', img: 'galleryImg4', progress: 'img4UploadProgress', progressText: 'img4ProgressText' }
+        ];
+
+        galleryInputs.forEach((item, index) => {
+            document.getElementById(item.input).addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const progress = document.getElementById(item.progress);
+                progress.classList.add('show');
+
+                try {
+                    const fileName = `gallery-${index + 1}-${Date.now()}-${file.name}`;
+                    const url = await uploadImageToSupabase(file, fileName);
+                    
+                    // Salva l'URL nel localStorage
+                    const savedData = JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData));
+                    savedData[`img${index + 1}`] = url;
+                    localStorage.setItem('kitrosData', JSON.stringify(savedData));
+                    
+                    document.getElementById(item.img).src = url;
+                    progress.classList.remove('show');
+                    document.getElementById(item.input).value = '';
+                    
+                    showStatus('✓ Immagine caricata!', 'success');
+                } catch (error) {
+                    progress.classList.remove('show');
+                    showStatus('❌ Errore nel caricamento', 'error');
+                }
+            });
+        });
+
+        // Salva i dati testuali
+        function saveData() {
+            const data = {
+                heroImage: JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData)).heroImage || defaultData.heroImage,
+                heroTitle: document.getElementById('heroTitle').value,
+                heroSubtitle: document.getElementById('heroSubtitle').value,
+                descTitle: document.getElementById('descTitle').value,
+                desc1: document.getElementById('desc1').value,
+                desc2: document.getElementById('desc2').value,
+                desc3: document.getElementById('desc3').value,
+                img1: JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData)).img1 || defaultData.img1,
+                img2: JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData)).img2 || defaultData.img2,
+                img3: JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData)).img3 || defaultData.img3,
+                img4: JSON.parse(localStorage.getItem('kitrosData') || JSON.stringify(defaultData)).img4 || defaultData.img4,
+                pricePerNight: parseInt(document.getElementById('pricePerNight').value) || 70,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                ratingMain: parseFloat(document.getElementById('ratingMain').value) || 9.8,
+                reviewCount: parseInt(document.getElementById('reviewCount').value) || 5
+            };
+
+            localStorage.setItem('kitrosData', JSON.stringify(data));
+            applyData(data);
+            
+            showStatus('✓ Modifiche salvate con successo!', 'success');
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('saveStatus');
+            status.textContent = message;
+            status.classList.add(type);
+            status.classList.remove(type === 'success' ? 'error' : 'success');
+            
+            setTimeout(() => {
+                status.classList.remove(type);
+            }, 3000);
+        }
+
+        // Admin Panel Toggle
+        document.getElementById('adminToggle').addEventListener('click', () => {
+            document.getElementById('adminPanel').classList.add('open');
+        });
+
+        document.getElementById('adminClose').addEventListener('click', () => {
+            document.getElementById('adminPanel').classList.remove('open');
+        });
+
+        // Login Events
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('loginClose').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.remove('show');
+        });
+        document.getElementById('headerLoginBtn').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.remove('hidden');
+        });
+        document.getElementById('headerLogoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('loginUsername').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        // Save and Logout Events
+        document.getElementById('saveBtn').addEventListener('click', saveData);
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+        // Calcolo Prezzo
         function calculatePrice() {
             const checkIn = document.getElementById('checkIn').value;
             const checkOut = document.getElementById('checkOut').value;
             const priceInfo = document.getElementById('priceInfo');
+            const currentPrice = parseInt(document.getElementById('pricePerNight').value) || 70;
 
             if (checkIn && checkOut) {
                 const start = new Date(checkIn);
@@ -873,8 +1511,8 @@
                 const nights = Math.max(0, Math.floor((end - start) / (1000 * 60 * 60 * 24)));
 
                 if (nights > 0) {
-                    const subtotal = nights * pricePerNight;
-                    const taxes = subtotal * taxRate;
+                    const subtotal = nights * currentPrice;
+                    const taxes = subtotal * 0.10;
                     const total = subtotal + taxes;
 
                     document.getElementById('nights').textContent = nights;
@@ -892,11 +1530,20 @@
         document.getElementById('checkIn').addEventListener('change', calculatePrice);
         document.getElementById('checkOut').addEventListener('change', calculatePrice);
 
-        // Form submission
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Prenotazione inviata! Riceverai una conferma via email entro 24 ore.');
-        });
+        // Check login status on page load
+        if (isLoggedIn()) {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('adminToggle').classList.remove('hidden');
+            document.getElementById('headerLoginBtn').classList.add('hidden');
+            document.getElementById('headerLogoutBtn').classList.remove('hidden');
+            loadData();
+        } else {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('adminToggle').classList.add('hidden');
+            document.getElementById('headerLoginBtn').classList.remove('hidden');
+            document.getElementById('headerLogoutBtn').classList.add('hidden');
+            applyData(defaultData);
+        }
     </script>
 </body>
 </html>
