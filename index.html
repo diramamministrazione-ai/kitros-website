@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitros - Appartamento Lussuoso a Palagiano | Prenota Online con Sconto</title>
+    <meta name="description" content="Kitros: appartamento moderno a Palagiano con 2 camere, WiFi gratuito 69 Mbps, aria condizionata, parcheggio gratis, giardino. Prenota online e risparmia!">
+    <meta name="keywords" content="apartamento Palagiano, affitto breve Puglia, Kitros, casa vacanze Taranto, alloggio Palagiano">
+    <meta name="author" content="Kitros">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Kitros - Appartamento Lussuoso a Palagiano">
+    <meta property="og:description" content="Scopri Kitros: appartamento con 2 camere a Palagiano. WiFi veloce, giardino, parcheggio gratis. Prenota ora!">
+    <meta property="og:locale" content="it_IT">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Apartment",
+      "name": "Kitros",
+      "description": "Appartamento moderno a Palagiano con 2 camere da letto, WiFi gratuito e giardino",
+      "url": "https://kitros-palagiano.com",
+      "telephone": "+39123456789",
+      "email": "info@kitros.it",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Palagiano",
+        "addressLocality": "Palagiano",
+        "addressRegion": "TA",
+        "postalCode": "74024",
+        "addressCountry": "IT"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "9.8",
+        "reviewCount": "5",
+        "bestRating": "10"
+      },
+      "amenityFeature": [
+        {"@type": "LocationFeatureSpecification", "name": "WiFi Gratuito", "value": true},
+        {"@type": "LocationFeatureSpecification", "name": "Aria Condizionata", "value": true},
+        {"@type": "LocationFeatureSpecification", "name": "Giardino", "value": true},
+        {"@type": "LocationFeatureSpecification", "name": "Parcheggio Gratuito", "value": true}
+      ]
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #8B7355;
+            --secondary-color: #D4A574;
+            --dark-color: #2C2C2C;
+            --light-color: #F5F1ED;
+            --accent-color: #E8D5C4;
+            --success-color: #27AE60;
+            --error-color: #E74C3C;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.6;
+            background-color: #FAFAF8;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dark-color);
+        }
+
+        /* HEADER */
+        header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+        }
+
+        nav a {
+            color: var(--dark-color);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #8B7355 0%, #A88968 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #C89564;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* GALLERY */
+        .gallery-section {
+            padding: 60px 0;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-grid img:first-child {
+            grid-row: span 2;
+            height: auto;
+        }
+
+        /* AMENITIES */
+        .amenities {
+            background: var(--light-color);
+            padding: 60px 0;
+        }
+
+        .amenities h2 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .amenity-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .amenity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .amenity-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .amenity-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .amenity-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* BOOKING WIDGET */
+        .booking-widget {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+        }
+
+        .booking-widget h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .booking-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+        }
+
+        .price-info {
+            background: var(--light-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .price-item {
+            text-align: center;
+        }
+
+        .price-item label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .price-item .amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* DESCRIPTION */
+        .description {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 60px;
+            line-height: 1.8;
+        }
+
+        .description h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .description p {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 15px;
+        }
+
+        /* REVIEWS */
+        .reviews {
+            background: var(--light-color);
+            padding: 60px 0;
+        }
+
+        .reviews h2 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .rating-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .rating-main {
+            text-align: center;
+        }
+
+        .rating-number {
+            font-size: 60px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .rating-label {
+            font-size: 18px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .rating-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .rating-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rating-bar-label {
+            width: 100px;
+            font-size: 14px;
+        }
+
+        .rating-bar-fill {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .rating-bar-progress {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .rating-bar-value {
+            width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-section p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* PAYMENT SECTION */
+        .payment-methods {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 60px;
+        }
+
+        .payment-methods h3 {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .payment-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            background: var(--light-color);
+        }
+
+        .payment-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .payment-option label {
+            font-weight: 600;
+            display: block;
+            font-size: 14px;
+        }
+
+        /* GUARANTEES */
+        .guarantees {
+            background: var(--light-color);
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 60px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .guarantees h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .guarantees ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .guarantees li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guarantees li:before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid img:first-child {
+                grid-row: span 1;
+            }
+
+            .booking-form {
+                grid-template-columns: 1fr;
+            }
+
+            .rating-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav a {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Kitros</div>
+                <nav>
+                    <a href="#descrizione">Descrizione</a>
+                    <a href="#camere">Camere</a>
+                    <a href="#servizi">Servizi</a>
+                    <a href="#contatti">Contatti</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <h1>Appartamento Lussuoso a Palagiano</h1>
+            <p>Scopri il comfort e la serenità a 23 km da Taranto</p>
+            <a href="#booking" class="btn">Prenota Ora</a>
+            <a href="#descrizione" class="btn btn-secondary">Scopri di più</a>
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="gallery-grid">
+                <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop" alt="Soggiorno">
+                <img src="https://images.unsplash.com/photo-1566195992211-291629590fc3?w=300&h=200&fit=crop" alt="Camera">
+                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&h=200&fit=crop" alt="Cucina">
+                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&h=200&fit=crop" alt="Giardino">
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOKING WIDGET -->
+    <section id="booking">
+        <div class="container">
+            <div class="booking-widget">
+                <h3>Prenota il tuo soggiorno</h3>
+                <form class="booking-form" id="bookingForm">
+                    <div class="form-group">
+                        <label>Check-in</label>
+                        <input type="date" id="checkIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Check-out</label>
+                        <input type="date" id="checkOut" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Numero ospiti</label>
+                        <select id="guests" required>
+                            <option value="">Seleziona</option>
+                            <option value="1">1 ospite</option>
+                            <option value="2">2 ospiti</option>
+                            <option value="3">3 ospiti</option>
+                            <option value="4">4 ospiti</option>
+                            <option value="5">5 ospiti</option>
+                        </select>
+                    </div>
+                </form>
+                
+                <div class="price-info" id="priceInfo" style="display: none;">
+                    <div class="price-item">
+                        <label>Notti:</label>
+                        <div class="amount" id="nights">0</div>
+                    </div>
+                    <div class="price-item">
+                        <label>Prezzo/notte:</label>
+                        <div class="amount">€70</div>
+                    </div>
+                    <div class="price-item">
+                        <label>Subtotale:</label>
+                        <div class="amount" id="subtotal">€0</div>
+                    </div>
+                    <div class="price-item">
+                        <label>Tasse (10%):</label>
+                        <div class="amount" id="taxes">€0</div>
+                    </div>
+                    <div class="price-item" style="border-top: 2px solid #ddd; padding-top: 15px;">
+                        <label>Totale:</label>
+                        <div class="amount" id="total" style="color: var(--success-color);">€0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AMENITIES -->
+    <section class="amenities">
+        <div class="container">
+            <h2>Servizi e Comfort</h2>
+            <div class="amenities-grid">
+                <div class="amenity-card">
+                    <div class="amenity-icon">📶</div>
+                    <h3>WiFi Veloce</h3>
+                    <p>WiFi gratuito 69 Mbps in tutta la struttura</p>
+                </div>
+                <div class="amenity-card">
+                    <div class="amenity-icon">❄️</div>
+                    <h3>Aria Condizionata</h3>
+                    <p>Clima perfetto in ogni stagione</p>
+                </div>
+                <div class="amenity-card">
+                    <div class="amenity-icon">🌳</div>
+                    <h3>Giardino</h3>
+                    <p>Zona relax all'aperto con vista meravigliosa</p>
+                </div>
+                <div class="amenity-card">
+                    <div class="amenity-icon">🅿️</div>
+                    <h3>Parcheggio Gratuito</h3>
+                    <p>Parcheggio privato incluso</p>
+                </div>
+                <div class="amenity-card">
+                    <div class="amenity-icon">👨‍🍳</div>
+                    <h3>Cucina Completa</h3>
+                    <p>Frigorifero, forno, macchina da caffè</p>
+                </div>
+                <div class="amenity-card">
+                    <div class="amenity-icon">🛏️</div>
+                    <h3>Camere Confortevoli</h3>
+                    <p>2 camere da letto arredate con gusto</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESCRIPTION -->
+    <section id="descrizione">
+        <div class="container">
+            <div class="description">
+                <h2>Benvenuti a Kitros</h2>
+                <p>
+                    Kitros si trova a Palagiano a 23 km da Cattedrale di Taranto, 24 km da Castello Aragonese e 24 km da Museo Archeologico Nazionale di Taranto - MArTA. La struttura offre un giardino, la vista sul giardino e il WiFi gratuito in tutta la struttura.
+                </p>
+                <p>
+                    Questo appartamento con aria condizionata comprende 2 camere da letto, un soggiorno, una cucina con utensili, frigorifero e macchina da caffè, e 1 bagno con bidet e doccia. Presso questo appartamento troverete asciugamani e lenzuola tra i servizi disponibili.
+                </p>
+                <p>
+                    Taranto Sotterranea è a 26 km da questo appartamento, mentre Cattedrale di Matera si trova a 45 km dalla struttura. Aeroporto di Bari Karol Wojtyla si trova a 78 km di distanza.
+                </p>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Posizione straordinaria</h3>
+                    <p>La proprietà è stata valutata dagli ospiti recenti con 9,8 su 10 per la sua posizione eccellente. Palagiano è un ottimo luogo dove pernottare per poter visitare diverse città e spiagge in Puglia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAYMENT METHODS -->
+    <section>
+        <div class="container">
+            <div class="payment-methods">
+                <h3>Metodi di pagamento</h3>
+                <div class="payment-grid">
+                    <div class="payment-option">
+                        <div class="payment-icon">💳</div>
+                        <label>Carta di Credito</label>
+                    </div>
+                    <div class="payment-option">
+                        <div class="payment-icon">🏦</div>
+                        <label>Bonifico Bancario</label>
+                    </div>
+                    <div class="payment-option">
+                        <div class="payment-icon">📱</div>
+                        <label>Paypal</label>
+                    </div>
+                    <div class="payment-option">
+                        <div class="payment-icon">💰</div>
+                        <label>Contanti</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GUARANTEES -->
+    <section>
+        <div class="container">
+            <div class="guarantees">
+                <h3>Le tue garanzie</h3>
+                <ul>
+                    <li>Miglior prezzo garantito</li>
+                    <li>Cancellazione gratuita fino a 7 giorni prima</li>
+                    <li>Conferma immediata della prenotazione</li>
+                    <li>Supporto 24/7 in italiano</li>
+                    <li>Nessun costo nascosto</li>
+                    <li>Struttura certificata e verificata</li>
+                    <li>Rating 9.8/10 - Eccezionale</li>
+                    <li>5 recensioni positive</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="reviews">
+        <div class="container">
+            <h2>Le valutazioni degli ospiti</h2>
+            <div class="rating-summary">
+                <div class="rating-main">
+                    <div class="rating-number">9.8</div>
+                    <div class="rating-label">Eccezionale</div>
+                    <div class="rating-label" style="font-size: 14px; color: #999;">5 recensioni</div>
+                </div>
+                <div class="rating-bars">
+                    <div class="rating-bar">
+                        <div class="rating-bar-label">Personale</div>
+                        <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 95%"></div></div>
+                        <div class="rating-bar-value">9.5</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-bar-label">Servizi</div>
+                        <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 100%"></div></div>
+                        <div class="rating-bar-value">10</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-bar-label">Comfort</div>
+                        <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 100%"></div></div>
+                        <div class="rating-bar-value">10</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-bar-label">Qualità/Prezzo</div>
+                        <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 100%"></div></div>
+                        <div class="rating-bar-value">10</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-bar-label">Posizione</div>
+                        <div class="rating-bar-fill"><div class="rating-bar-progress" style="width: 95%"></div></div>
+                        <div class="rating-bar-value">9.5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contatti">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>Chi Siamo</h4>
+                    <p>Kitros è un'accogliente proprietà situata nel cuore di Palagiano, Puglia, con 65 mq di spazio confortevole e lussuoso.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Info Utili</h4>
+                    <a href="#">Check-in dalle 14:00</a>
+                    <a href="#">Check-out entro le 11:00</a>
+                    <a href="#">Animali non ammessi</a>
+                    <a href="#">Fumare non è consentito</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contatti</h4>
+                    <p>📧 Email: info@kitros.it</p>
+                    <p>📱 Tel: +39 123 456 789</p>
+                    <p>📍 Palagiano, TA 74024</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Seguici</h4>
+                    <a href="#">Facebook</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">TripAdvisor</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Kitros. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const pricePerNight = 70;
+        const taxRate = 0.10;
+
+        // Calcola il prezzo automaticamente
+        function calculatePrice() {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+            const priceInfo = document.getElementById('priceInfo');
+
+            if (checkIn && checkOut) {
+                const start = new Date(checkIn);
+                const end = new Date(checkOut);
+                const nights = Math.max(0, Math.floor((end - start) / (1000 * 60 * 60 * 24)));
+
+                if (nights > 0) {
+                    const subtotal = nights * pricePerNight;
+                    const taxes = subtotal * taxRate;
+                    const total = subtotal + taxes;
+
+                    document.getElementById('nights').textContent = nights;
+                    document.getElementById('subtotal').textContent = '€' + subtotal.toFixed(2);
+                    document.getElementById('taxes').textContent = '€' + taxes.toFixed(2);
+                    document.getElementById('total').textContent = '€' + total.toFixed(2);
+
+                    priceInfo.style.display = 'grid';
+                } else {
+                    priceInfo.style.display = 'none';
+                }
+            }
+        }
+
+        document.getElementById('checkIn').addEventListener('change', calculatePrice);
+        document.getElementById('checkOut').addEventListener('change', calculatePrice);
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Prenotazione inviata! Riceverai una conferma via email entro 24 ore.');
+        });
+    </script>
+</body>
+</html>
