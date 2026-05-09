@@ -6,8 +6,7 @@
     <title>Kitros - Appartamento Lussuoso a Palagiano | Prenota Online</title>
     <meta name="description" content="Kitros: appartamento moderno a Palagiano con 2 camere, WiFi gratuito 69 Mbps, aria condizionata, parcheggio gratis, giardino. Prenota online e risparmia!">
     
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4"></script>
+
 
     <style>
         * {
@@ -1222,7 +1221,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_NQU57GyJqpYqhKq0Z4gy2Q_UF_4wqho';
         const BUCKET_NAME = 'kitros-images';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = null; // Non serve più, usiamo API REST
 
         // CREDENZIALI ADMIN (Demo)
         const ADMIN_CREDENTIALS = {
@@ -1338,24 +1337,29 @@
             document.getElementById('reviewCountDisplay').textContent = data.reviewCount + ' recensioni';
         }
 
-        // Upload immagine a Supabase
+        // Upload immagine a Supabase via API REST
         async function uploadImageToSupabase(file, path) {
             try {
-                const { data, error } = await supabase.storage
-                    .from(BUCKET_NAME)
-                    .upload(path, file, {
-                        cacheControl: '3600',
-                        upsert: true
-                    });
+                const response = await fetch(
+                    `${SUPABASE_URL}/storage/v1/object/${BUCKET_NAME}/${path}`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'x-upsert': 'true'
+                        },
+                        body: file
+                    }
+                );
 
-                if (error) throw error;
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Errore upload');
+                }
 
-                // Ottieni l'URL pubblico
-                const { data: urlData } = supabase.storage
-                    .from(BUCKET_NAME)
-                    .getPublicUrl(path);
-
-                return urlData.publicUrl;
+                // Costruisci l'URL pubblico
+                const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}`;
+                return publicUrl;
             } catch (error) {
                 console.error('Errore upload:', error);
                 throw error;
