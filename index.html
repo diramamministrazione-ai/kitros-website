@@ -402,15 +402,27 @@
 
         /* HEADER */
         header {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            border-bottom: none;
+            padding: 12px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: none;
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        header.visible {
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         }
 
         .header-content {
@@ -420,28 +432,115 @@
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             color: white;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            min-width: 120px;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 40px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
         }
 
         nav a {
             color: white;
             text-decoration: none;
             font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover {
+            color: var(--secondary-color);
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
+        }
+
+        .language-selector {
+            position: relative;
+        }
+
+        .language-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 4px;
             transition: all 0.3s;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
-        nav a:hover {
-            opacity: 0.8;
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .language-flag {
+            width: 20px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            min-width: 150px;
+            margin-top: 8px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .language-dropdown.show {
+            display: flex;
+        }
+
+        .language-dropdown button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .language-dropdown button:hover {
+            background: rgba(212, 165, 116, 0.3);
         }
 
         .btn-header-login {
@@ -456,7 +555,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 13px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
@@ -464,6 +563,26 @@
             background: rgba(139, 115, 85, 0.95);
             border-color: rgba(255, 255, 255, 0.4);
             transform: translateY(-2px);
+        }
+
+        .btn-prenota {
+            padding: 12px 28px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.4);
+        }
+
+        .btn-prenota:hover {
+            background: #C89564;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 165, 116, 0.6);
         }
 
         .btn-header-logout {
@@ -478,8 +597,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-size: 13px;
         }
 
         .btn-header-logout:hover {
@@ -488,19 +606,62 @@
         }
 
         .btn-header-login.hidden,
-        .btn-header-logout.hidden {
+        .btn-header-logout.hidden,
+        .btn-prenota.hidden {
             display: none;
+        }
+
+        @media (max-width: 1024px) {
+            nav {
+                gap: 20px;
+            }
+
+            nav a {
+                font-size: 13px;
+            }
+
+            .header-right {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 0;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .header-right {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
 
         /* HERO SECTION */
         .hero {
             color: white;
-            padding: 80px 0;
+            padding: 150px 0 80px 0;
             text-align: center;
             position: relative;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero::before {
@@ -1003,13 +1164,32 @@
                 <div class="logo">Kitros</div>
                 <div class="header-right">
                     <nav>
-                        <a href="#descrizione">Descrizione</a>
-                        <a href="#camere">Camere</a>
-                        <a href="#servizi">Servizi</a>
-                        <a href="#contatti">Contatti</a>
+                        <a href="#home">HOME</a>
+                        <a href="#descrizione">CHI SIAMO</a>
+                        <a href="#servizi">SERVIZI</a>
+                        <a href="#camere">CAMERE</a>
+                        <a href="#galleria">GALLERIA</a>
+                        <a href="#contatti">CONTATTI</a>
                     </nav>
-                    <button class="btn-header-login" id="headerLoginBtn">🔐 Accedi</button>
-                    <button class="btn-header-logout hidden" id="headerLogoutBtn">🚪 Esci</button>
+                    <div class="header-actions">
+                        <div class="language-selector">
+                            <button class="language-btn" id="languageBtn">
+                                <span class="language-flag">🇮🇹</span>
+                                IT
+                                <span>▼</span>
+                            </button>
+                            <div class="language-dropdown" id="languageDropdown">
+                                <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                                <button onclick="setLanguage('en')">🇬🇧 English</button>
+                                <button onclick="setLanguage('es')">🇪🇸 Español</button>
+                                <button onclick="setLanguage('fr')">🇫🇷 Français</button>
+                                <button onclick="setLanguage('de')">🇩🇪 Deutsch</button>
+                            </div>
+                        </div>
+                        <button class="btn-header-login" id="headerLoginBtn">🔐 Accedi</button>
+                        <button class="btn-header-logout hidden" id="headerLogoutBtn">🚪 Esci</button>
+                        <a href="#booking" class="btn-prenota" id="btnPrenota">Prenota Ora</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1470,7 +1650,47 @@
             }, 3000);
         }
 
-        // Admin Panel Toggle
+        // Show/Hide Header on scroll
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('visible');
+            } else {
+                header.classList.remove('visible');
+            }
+        });
+        document.getElementById('languageBtn').addEventListener('click', () => {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+        });
+
+        // Chiudi dropdown quando clicchi fuori
+        document.addEventListener('click', (e) => {
+            const selector = document.querySelector('.language-selector');
+            if (!selector.contains(e.target)) {
+                document.getElementById('languageDropdown').classList.remove('show');
+            }
+        });
+
+        function setLanguage(lang) {
+            const langMap = {
+                'it': { flag: '🇮🇹', name: 'IT' },
+                'en': { flag: '🇬🇧', name: 'EN' },
+                'es': { flag: '🇪🇸', name: 'ES' },
+                'fr': { flag: '🇫🇷', name: 'FR' },
+                'de': { flag: '🇩🇪', name: 'DE' }
+            };
+
+            const btn = document.getElementById('languageBtn');
+            const lang_data = langMap[lang];
+            btn.innerHTML = `<span class="language-flag">${lang_data.flag}</span> ${lang_data.name} <span>▼</span>`;
+            document.getElementById('languageDropdown').classList.remove('show');
+            localStorage.setItem('kitrosLanguage', lang);
+        }
+
+        // Carica lingua salvata
+        const savedLanguage = localStorage.getItem('kitrosLanguage') || 'it';
+        setLanguage(savedLanguage);
         document.getElementById('adminToggle').addEventListener('click', () => {
             document.getElementById('adminPanel').classList.add('open');
         });
